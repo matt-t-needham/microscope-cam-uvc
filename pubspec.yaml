@@ -36,7 +36,6 @@ dependencies:
   cupertino_icons: ^1.0.8
   camera: ^0.10.5
   path_provider: ^2.1.1
-  image_gallery_saver: ^2.0.3
 
 dev_dependencies:
   flutter_test:

@@ -1,7 +1,7 @@
-import 'dart:typed_data';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:path_provider/path_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -75,15 +75,12 @@ class _CameraScreenState extends State<CameraScreen> {
     }
     try {
       final image = await controller!.takePicture();
-      final bytes = await image.readAsBytes();
-      await ImageGallerySaver.saveImage(
-        Uint8List.fromList(bytes),
-        quality: 95,
-        name: 'microscope_${DateTime.now().millisecondsSinceEpoch}',
-      );
+      final directory = await getApplicationDocumentsDirectory();
+      final imagePath = '${directory.path}/microscope_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      await File(image.path).copy(imagePath);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Image saved to gallery')),
+          SnackBar(content: Text('Image saved: $imagePath')),
         );
       }
     } catch (e) {
@@ -102,16 +99,15 @@ class _CameraScreenState extends State<CameraScreen> {
     if (isRecording) {
       try {
         final video = await controller!.stopVideoRecording();
-        await ImageGallerySaver.saveFile(
-          video.path,
-          name: 'microscope_${DateTime.now().millisecondsSinceEpoch}',
-        );
+        final directory = await getApplicationDocumentsDirectory();
+        final videoPath = '${directory.path}/microscope_${DateTime.now().millisecondsSinceEpoch}.mp4';
+        await File(video.path).copy(videoPath);
         setState(() {
           isRecording = false;
         });
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Video saved to gallery')),
+            SnackBar(content: Text('Video saved: $videoPath')),
           );
         }
       } catch (e) {
