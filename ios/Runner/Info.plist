@@ -45,5 +45,13 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>This app requires camera access to display the microscope view</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app requires microphone access for video recording</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app requires photo library access to save images and videos</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app requires photo library access to save images and videos</string>
 </dict>
 </plist>
