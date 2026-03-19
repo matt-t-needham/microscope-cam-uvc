@@ -582,13 +582,15 @@ class _CameraScreenState extends State<CameraScreen>
   Widget _buildBuiltinPreview(_BuiltinCamera active) {
     final orientation = MediaQuery.of(context).orientation;
     final cameraAR = active.controller.value.aspectRatio;
-    final displayAR = orientation == Orientation.portrait
+    final baseAR = orientation == Orientation.portrait
         ? (cameraAR > 1 ? 1.0 / cameraAR : cameraAR)
         : (cameraAR < 1 ? 1.0 / cameraAR : cameraAR);
+    // Odd rotation turns swap portrait↔landscape, so invert the AR
+    final effectiveAR = _extraRotationTurns % 2 == 0 ? baseAR : 1.0 / baseAR;
 
     return Center(
       child: AspectRatio(
-        aspectRatio: displayAR,
+        aspectRatio: effectiveAR,
         child: RotatedBox(
           quarterTurns: _extraRotationTurns,
           child: Transform(
@@ -610,11 +612,12 @@ class _CameraScreenState extends State<CameraScreen>
           return const Center(child: CircularProgressIndicator());
         }
         final mode = state.previewMode;
-        final ar =
+        final baseAr =
             mode != null ? mode.frameWidth / mode.frameHeight : 16.0 / 9.0;
+        final effectiveAr = _extraRotationTurns % 2 == 0 ? baseAr : 1.0 / baseAr;
         return Center(
           child: AspectRatio(
-            aspectRatio: ar,
+            aspectRatio: effectiveAr,
             child: RotatedBox(
               quarterTurns: _extraRotationTurns,
               child: Transform(
